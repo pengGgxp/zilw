@@ -33,7 +33,7 @@ def write_data_to_excel(data_list, excel_file):
     sheet = workbook.active
 
     # 写表头
-    headings = ['日期', '时间', '教室', '专业年级班级', '课程名称', '迟到', '请假', '带早餐', '负责人','踢球','旷课']
+    headings = ['日期', '时间', '教室', '专业年级班级', '课程名称', '迟到', '请假', '带早餐','负责人','踢球','旷课','方队']
     sheet.append(headings)
 
     # 写数据
@@ -42,7 +42,7 @@ def write_data_to_excel(data_list, excel_file):
         row.append(data.get('日期', ''))
         row.append(data.get('时间', ''))
         row.append(data.get('教室', ''))
-        row.append(data.get('专业年级班级', ''))
+        row.append(data.get('专业年级班级', '')or data.get('年级班级', ''))
         row.append(data.get('课程名称', '')or data.get('课程', ''))
         row.append(data.get('迟到', ''))
         row.append(data.get('请假', ''))
@@ -50,12 +50,13 @@ def write_data_to_excel(data_list, excel_file):
         row.append(data.get('负责人', ''))
         row.append(data.get('踢球', ''))
         row.append(data.get('旷课', ''))
+        row.append(data.get('方队', ''))
         sheet.append(row)
 
     workbook.save(excel_file)
     print(f"已将数据写入 Excel 文件 {excel_file}")
 
-# 测试代码
+
 if __name__ == "__main__":
     data_list = read_data_from_file("data.txt")
     write_data_to_excel(data_list, "data.xlsx")
