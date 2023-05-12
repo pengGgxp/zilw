@@ -1,5 +1,5 @@
 import openpyxl
-
+import re
 # 读取文件并将数据整理成列表
 def read_data_from_file(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
@@ -33,9 +33,9 @@ def write_data_to_excel(data_list, excel_file):
     sheet = workbook.active
 
     # 写表头
-    headings = ['日期', '时间', '教室', '专业年级班级', '课程名称', '迟到', '请假', '带早餐','负责人','踢球','旷课','方队']
+    headings = ['日期', '时间', '教室', '专业年级班级', '课程名称', '迟到', '请假', '带早餐','负责人']
     sheet.append(headings)
-
+   # , '踢球', '旷课', '方队'
     # 写数据
     for data in data_list:
         row = []
@@ -48,9 +48,17 @@ def write_data_to_excel(data_list, excel_file):
         row.append(data.get('请假', ''))
         row.append(data.get('带早餐', ''))
         row.append(data.get('负责人', ''))
-        row.append(data.get('踢球', ''))
-        row.append(data.get('旷课', ''))
-        row.append(data.get('方队', ''))
+        # row.append(data.get('踢球', ''))
+        # row.append(data.get('旷课', ''))
+        # row.append(data.get('方队', ''))
+        data_f = data
+        tmp_list = dict.keys(data_f)
+        pattern = re.compile('(日期|时间|教室|专业年级班级|课程名称|迟到|请假|年级班级|课程|负责人|带早餐)')
+        for tmp_list_f in tmp_list:
+            tmp = re.search(pattern, tmp_list_f)
+            if tmp == None:
+                VALUE_F = data.get(tmp_list_f, '')
+                row.append(VALUE_F+"("+tmp_list_f+")")
         sheet.append(row)
 
     workbook.save(excel_file)
