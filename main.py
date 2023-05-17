@@ -1,6 +1,16 @@
 import openpyxl
 import re
 # 读取文件并将数据整理成列表
+def data_proceing(file_path):
+    patter = ':'
+    tmp = []
+    with open(file_path, "r", encoding="utf-8") as f:
+        for line in f:
+            tmp.append(re.sub(patter,"：",line))
+        f.close()
+    with open(file_path, "w+", encoding="utf-8") as ff:
+        ff.writelines(tmp)
+        f.close()
 def read_data_from_file(file_path):
     with open(file_path, "r", encoding="utf-8") as f:
         data_list = []
@@ -33,7 +43,7 @@ def write_data_to_excel(data_list, excel_file):
     sheet = workbook.active
 
     # 写表头
-    headings = ['日期', '时间', '教室', '专业年级班级', '课程名称', '迟到', '请假', '带早餐','负责人']
+    headings = ['日期', '时间', '教室', '专业年级班级', '课程名称', '迟到', '请假', '带早餐','负责人','其他']
     sheet.append(headings)
    # , '踢球', '旷课', '方队'
     # 写数据
@@ -66,5 +76,6 @@ def write_data_to_excel(data_list, excel_file):
 
 
 if __name__ == "__main__":
+    data_proceing("data.txt")
     data_list = read_data_from_file("data.txt")
     write_data_to_excel(data_list, "data.xlsx")
