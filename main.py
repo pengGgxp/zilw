@@ -6,12 +6,14 @@ def data_proceing(file_path):
     tmp = []
     with open(file_path, "r", encoding="utf-8") as f:
         for line in f:
-            tmp.append(re.sub(patter,"：",line))
+            tmp.append(re.sub(patter, "：", line))
         f.close()
     with open(file_path, "w+", encoding="utf-8") as ff:
         ff.writelines(tmp)
         f.close()
+    return file_path
 def read_data_from_file(file_path):
+    count = 0
     with open(file_path, "r", encoding="utf-8") as f:
         data_list = []
         data = {}
@@ -31,6 +33,11 @@ def read_data_from_file(file_path):
                     responsible_person = key.strip()
                 else:
                     data[key.strip()] = value.strip()
+            else:
+                line ='：'+line
+                count += 1
+                key, value = line.split("：", 1)
+                data["未处理数据（可能没按照原来的格式）{}".format(count)] = value.strip()
         if data:
             data["负责人"] = responsible_person
             data_list.append(data)
@@ -58,9 +65,6 @@ def write_data_to_excel(data_list, excel_file):
         row.append(data.get('请假', ''))
         row.append(data.get('带早餐', ''))
         row.append(data.get('负责人', ''))
-        # row.append(data.get('踢球', ''))
-        # row.append(data.get('旷课', ''))
-        # row.append(data.get('方队', ''))
         data_f = data
         tmp_list = dict.keys(data_f)
         pattern = re.compile('(日期|时间|教室|专业年级班级|课程名称|迟到|请假|年级班级|课程|负责人|带早餐)')
@@ -72,10 +76,8 @@ def write_data_to_excel(data_list, excel_file):
         sheet.append(row)
 
     workbook.save(excel_file)
-    print(f"已将数据写入 Excel 文件 {excel_file}")
+    return (f"已将数据写入 Excel 文件 {excel_file}")
 
 
 if __name__ == "__main__":
-    data_proceing("data.txt")
-    data_list = read_data_from_file("data.txt")
-    write_data_to_excel(data_list, "data.xlsx")
+    write_data_to_excel(read_data_from_file(data_proceing("data.txt")), "data.xlsx")
