@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+'''此文件为gui界面配置文件，使用pyqt工具进行生成，大部分为自动生成的文件，
+有部分槽函数为我编写，
+主要功能为我实现的。包括界面设计'''
+import traceback
 
 # Form implementation generated from reading ui file 'untitled.ui'
 #
@@ -9,18 +13,22 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QFileDialog, QMainWindow
+from PyQt5.QtCore import QObject, pyqtSignal, pyqtBoundSignal
+from PyQt5.QtGui import QIcon, QTextCursor
+from PyQt5.QtWidgets import QFileDialog, QMainWindow, QApplication, QMessageBox
 import sys
-
+import subprocess
 from PyQt5.QtWidgets import QFileDialog
 
 import main
 
 
+
+
+
 class Ui_MainWindow(QMainWindow):
     def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
+        MainWindow.setObjectName("学风处理")
         MainWindow.resize(800, 600)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
@@ -72,27 +80,45 @@ class Ui_MainWindow(QMainWindow):
         self.chuliButton.clicked.connect(self.procesing)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-    # def __init__(self, openfile_name):
-    #     self.openfile_name = openfile_name
+
+
+
     def openfile(self):
         openfile_name = QFileDialog.getOpenFileName(self,"选择要处理的txt文件",'','txt(*.txt)')
-        # print(openfile_name)
         openfile_name = str(openfile_name[0])
         self.doclujing.setText(openfile_name)
+        self.textBrowser.append("文件已打开")
+
+
+
+
 
 
 
     def procesing(self):
-        openfile_name = self.doclujing.text()
-        ss = ''
-        for i in openfile_name:
-            if i =='/':
-                i = '//'
-            ss += i
-        jincheng = QMainWindow.fun_data_proceing(ss)
-        jincheng = QMainWindow.fun_read_data_from_file(jincheng)
-        jincheng = QMainWindow.fun_write_data_to_excel(jincheng, self.lineEdit.text()+".xlsx")
-        self.textBrowser.setText(jincheng)
+        try:
+            openfile_name = self.doclujing.text()
+            ss = ''
+            for i in openfile_name:
+                if i =='/':
+                    i = '//'
+                ss += i
+            self.textBrowser.append("正在处理文件")
+            jincheng = QMainWindow.fun_data_proceing(ss)
+            self.textBrowser.append("正在进行匹配格式")
+            jincheng = QMainWindow.fun_read_data_from_file(jincheng)
+            self.textBrowser.append("正在读取并处理excel文件")
+            jincheng = QMainWindow.fun_write_data_to_excel(jincheng, self.lineEdit.text()+".xlsx")
+            self.textBrowser.append(jincheng)
+        except Exception as e:
+            error_message = traceback.format_exc()
+            self.textBrowser.append("程序发生错误:")
+            self.textBrowser.append(error_message)
+            msg_box = QMessageBox(QMessageBox.Information, 'ERROR', error_message)
+            msg_box.exec_()
+
+
+
 
     QMainWindow.fun_data_proceing = main.data_proceing
     QMainWindow.fun_read_data_from_file = main.read_data_from_file
@@ -109,6 +135,8 @@ class Ui_MainWindow(QMainWindow):
         self.label.setText(_translate("MainWindow", "设置处理后的文件名"))
         self.menu.setTitle(_translate("MainWindow", "自律中心"))
         self.setWindowIcon(QIcon('app.ico'))
+        self.lineEdit.setText('done')
+
 
 
 

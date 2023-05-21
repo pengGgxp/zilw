@@ -1,3 +1,8 @@
+'''
+此程序是为了处理平时的查课数据，将其中的关键数据提取并整理成表格，运用到了openpyxl库和pyqt 的gui界面
+实现功能很简单但是很有用，使用时读取一个txt文件，txt文件要有固定格式，这样程序可以自动处理并且自动生成处理后的文件，
+使用gui界面使得用户更好的交互。
+'''
 import openpyxl
 import re
 # 读取文件并将数据整理成列表
@@ -52,7 +57,6 @@ def write_data_to_excel(data_list, excel_file):
     # 写表头
     headings = ['日期', '时间', '教室', '专业年级班级', '课程名称', '迟到', '请假', '带早餐','负责人','其他']
     sheet.append(headings)
-   # , '踢球', '旷课', '方队'
     # 写数据
     for data in data_list:
         row = []
@@ -76,8 +80,5 @@ def write_data_to_excel(data_list, excel_file):
         sheet.append(row)
 
     workbook.save(excel_file)
-    return (f"已将数据写入 Excel 文件 {excel_file}")
+    return (f"已将数据写入 Excel 文件 {excel_file}\n")
 
-
-if __name__ == "__main__":
-    write_data_to_excel(read_data_from_file(data_proceing("data.txt")), "data.xlsx")
